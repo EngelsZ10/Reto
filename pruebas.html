@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Photo as Base64</title>
+    <style>
+        img {
+            max-width: 300px;
+            max-height: 300px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Upload Photo as Base64</h2>
+    <input type="file" id="fileInput" accept="image/*">
+    <div id="imageContainer"></div>
+    <button onclick="handleUpload()">Upload</button>
+    <div id="faces-list"></div>
+    <script>
+document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const imageUrl = event.target.result;
+                const image = document.createElement('img');
+                image.src = imageUrl;
+                document.getElementById('imageContainer').innerHTML = '';
+                document.getElementById('imageContainer').appendChild(image);
+            };
+
+            reader.readAsDataURL(file);
+        });
+// Mostramos las caras en el HTML
+function showFaces(faces){
+    const facesList = document.getElementById('faces-list');
+    facesList.innerHTML = '';
+    faces.forEach(face => {
+        const img = document.createElement('img');
+        img.src = face.face;
+        facesList.appendChild(img);
+        const vectorInfo = document.createElement('p');
+        vectorInfo.textContent = `Encoding: [${face.encoding.join(', ')}]`;
+        facesList.appendChild(vectorInfo);
+    });
+}
+
+
+        function handleUpload() {
+            console.log("subiendo");
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64String = event.target.result;
+                    sendDataToAPI(base64String);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Please select a file.");
+            }
+        }
+        
+        function sendDataToAPI(base64String) {
+            // Replace 'your-api-endpoint' with the actual API endpoint
+            const apiUrl = 'http://127.0.0.1:105/get_encoding';
+            const requestData = { img: base64String };
+            
+            // Make an AJAX POST request to the API endpoint
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Image uploaded successfully!');
+                    return response.json();
+                } else {
+                    throw new Error('Failed to upload image');
+                }
+            }).then(response =>{
+                showFaces(response)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to upload image. Please try again later.');
+            });
+        }
+    </script>
+</body>
+</html>
