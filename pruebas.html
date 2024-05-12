@@ -57,7 +57,7 @@ function showFaces(faces){
             
             if (file) {
                 var formData = new FormData();
-                formData.append('file', file);
+                formData.append('img', file);
                 sendDataToAPI(formData);
             } else {
                 alert("Please select a file.");
@@ -67,15 +67,13 @@ function showFaces(faces){
         function sendDataToAPI(formData) {
             // Replace 'your-api-endpoint' with the actual API endpoint
             const apiUrl = 'http://127.0.0.1:105/get_encoding';
-            const requestData = formData;
-            
+            for (const value of formData.values()) {
+                console.log(value);
+            }
             // Make an AJAX POST request to the API endpoint
             fetch(apiUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
+                body: formData,
             })
             .then(response => {
                 if (response.ok) {
