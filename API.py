@@ -23,12 +23,12 @@ def welcome():
 def pruebas():
     return Response(open('pruebas.html').read(), mimetype="text/html")
 
-@app.route('/get_encoding', methods=['post'])
+
+
+
+@app.route('/get_encoding', methods=['POST'])
 def getEncodings():
-    imgBase64 = request.json['img']
-    im_bytes = base64.b64decode(imgBase64[imgBase64.index(",")+1:])
-    im_file = BytesIO(im_bytes)  
-    image = Image.open(im_file)
+    image = Image.open(request.files["img"])
     load = np.array(image)
     face_locations = face_recognition.face_locations(load)
     result = []

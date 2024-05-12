@@ -53,23 +53,21 @@ function showFaces(faces){
             console.log("subiendo");
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
+
             
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const base64String = event.target.result;
-                    sendDataToAPI(base64String);
-                };
-                reader.readAsDataURL(file);
+                var formData = new FormData();
+                formData.append('file', file);
+                sendDataToAPI(formData);
             } else {
                 alert("Please select a file.");
             }
         }
         
-        function sendDataToAPI(base64String) {
+        function sendDataToAPI(formData) {
             // Replace 'your-api-endpoint' with the actual API endpoint
             const apiUrl = 'http://127.0.0.1:105/get_encoding';
-            const requestData = { img: base64String };
+            const requestData = formData;
             
             // Make an AJAX POST request to the API endpoint
             fetch(apiUrl, {
