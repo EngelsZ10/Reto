@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        video{
+            background-color: aquamarine;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <video id="video" width="640" height="480" autoplay></video>
+      </center>
+      <input type="file" name="image" accept="image/*" capture="user" style="display:none;">
+</body>
+<script>
+    var video = document.getElementById('video');
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            video.srcObject=stream;
+            video.play();
+        });
+    }
+
+// Function to toggle between showing different HTML tags
+function toggleElement() {
+  var video = document.getElementById("video");
+  var fileInput = document.querySelector('input[type="file"]');
+console.log(navigator);
+  if (!navigator.userAgentData.mobile) {
+    video.style.display = "block";
+    fileInput.style.display = "none";
+  } else {
+    video.style.display = "none";
+    fileInput.style.display = "block";
+  }
+}
+
+// Call toggleHtmlTag function when the DOM content is loaded
+document.addEventListener("DOMContentLoaded", toggleElement);
+</script>
+</html>
